@@ -366,7 +366,7 @@ abstract class DifferentialChangesetRenderer {
     // TODO: Let the user customize their tab width / display style.
     // TODO: We should possibly post-process "\r" as well.
     // TODO: Both these steps should happen earlier.
-    $result = str_replace("\t", '  ', $result);
+    $result = str_replace("\t", '        ', $result);
 
     return phutil_safe_html($result);
   }

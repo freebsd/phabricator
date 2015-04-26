@@ -67,3 +67,5 @@ class AddMaintainerReview extends HeraldCustomAction {
    }
 
 }
+
+?>

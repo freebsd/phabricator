@@ -7,6 +7,13 @@ final class PhabricatorAuthRegisterController
     return false;
   }
 
+  private function emailToUsername($email) {
+    $mangled_email = str_ireplace('@freebsd.org', '', $email);
+    $mangled_email = str_replace('@', '_', $mangled_email);
+    $mangled_email = str_replace('+', '_', $mangled_email);
+    return $mangled_email;
+  }
+
   public function handleRequest(AphrontRequest $request) {
     $viewer = $this->getViewer();
     $account_key = $request->getURIData('akey');
@@ -67,9 +74,9 @@ final class PhabricatorAuthRegisterController
       $default_realname = null;
       $default_email = null;
     } else {
-      $default_username = $account->getUsername();
       $default_realname = $account->getRealName();
       $default_email = $account->getEmail();
+      $fbsd_username = $this->emailToUsername($default_email);
     }
 
     $account_type = PhabricatorAuthPassword::PASSWORD_TYPE_ACCOUNT;
@@ -195,7 +202,7 @@ final class PhabricatorAuthRegisterController
     }
 
     $profile = id(new PhabricatorRegistrationProfile())
-      ->setDefaultUsername($default_username)
+      ->setDefaultUsername($fbsd_username)
       ->setDefaultEmail($default_email)
       ->setDefaultRealName($default_realname)
       ->setCanEditUsername(true)
@@ -213,11 +220,11 @@ final class PhabricatorAuthRegisterController
       ->setUser($user);
     PhutilEventEngine::dispatchEvent($event);
 
-    $default_username = $profile->getDefaultUsername();
+    $fbsd_username = $profile->getDefaultUsername();
     $default_email = $profile->getDefaultEmail();
     $default_realname = $profile->getDefaultRealName();
 
-    $can_edit_username = $profile->getCanEditUsername();
+    $can_edit_username = false;
     $can_edit_email = $profile->getCanEditEmail();
     $can_edit_realname = $profile->getCanEditRealName();
 
@@ -236,7 +243,7 @@ final class PhabricatorAuthRegisterController
       $force_verify = true;
     }
 
-    $value_username = $default_username;
+    $value_username = $fbsd_username;
     $value_realname = $default_realname;
     $value_email = $default_email;
     $value_password = null;
@@ -334,6 +341,10 @@ final class PhabricatorAuthRegisterController
         } else {
           $e_email = null;
         }
+      }
+
+      if ($account->getAccountType() != 'ldap') {
+        $value_username = $this->emailToUsername($value_email);
       }
 
       if ($can_edit_realname) {

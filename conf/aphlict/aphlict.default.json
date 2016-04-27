@@ -22,5 +22,5 @@
       "path": "/var/log/aphlict.log"
     }
   ],
-  "pidfile": "/var/tmp/aphlict/pid/aphlict.pid"
+  "pidfile": "/var/run/aphlict/aphlict.pid"
 }

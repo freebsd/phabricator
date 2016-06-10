@@ -90,6 +90,7 @@ function phabricator_startup() {
   // If the preamble script exists, load it.
   $t_preamble = microtime(true);
   $preamble_path = $root.'/support/preamble.php';
+  $_SERVER['HTTPS'] = true;
   if (file_exists($preamble_path)) {
     require_once $preamble_path;
   }

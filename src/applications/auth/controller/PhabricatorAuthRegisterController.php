@@ -542,7 +542,7 @@ final class PhabricatorAuthRegisterController
       $form->appendChild(
         id(new AphrontFormMarkupControl())
           ->setLabel(pht('Username'))
-          ->setValue($value_username)
+          ->setValue('automatically set based on email address')
           ->setError($e_username));
     }
 
@@ -575,7 +575,7 @@ final class PhabricatorAuthRegisterController
     if ($can_edit_email) {
       $form->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel(pht('Email'))
+          ->setLabel(pht('Email (public information)'))
           ->setName('email')
           ->setValue($value_email)
           ->setCaption(PhabricatorUserEmail::describeAllowedAddresses())

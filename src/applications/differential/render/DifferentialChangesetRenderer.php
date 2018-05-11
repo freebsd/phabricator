@@ -366,9 +366,17 @@ abstract class DifferentialChangesetRenderer extends Phobject {
     // TODO: Let the user customize their tab width / display style.
     // TODO: We should possibly post-process "\r" as well.
     // TODO: Both these steps should happen earlier.
-    $result = str_replace("\t", '        ', $result);
+    $result = $this->expandLineTabs($result);
 
     return phutil_safe_html($result);
+  }
+
+  private function expandLineTabs($line, $tab_size = 8) {
+    while (false !== ($pos = strpos($line, "\t"))) {
+      $expanded_tab = str_repeat(' ', $tab_size - ($pos % $tab_size));
+      $line = substr_replace($line, $expanded_tab, $pos, 1);
+    }
+    return $line;
   }
 
   abstract public function isOneUpRenderer();

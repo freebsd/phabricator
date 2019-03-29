@@ -1457,7 +1457,7 @@ final class DifferentialChangesetParser extends Phobject {
     $line = phutil_string_cast($line);
 
     // TODO: This should be flexible, eventually.
-    $tab_width = 2;
+    $tab_width = 8;
 
     $line = self::replaceTabsWithSpaces($line, $tab_width);
     $line = str_replace($search, $replace, $line);

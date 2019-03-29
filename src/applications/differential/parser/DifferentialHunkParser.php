@@ -283,7 +283,7 @@ final class DifferentialHunkParser extends Phobject {
       if ($o['type'] != $n['type']) {
         $o_segments = array();
         $n_segments = array();
-        $tab_width = 2;
+        $tab_width = 8;
 
         $o_text = $o['text'];
         $n_text = $n['text'];

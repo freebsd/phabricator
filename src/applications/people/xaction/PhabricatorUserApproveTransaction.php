@@ -28,16 +28,14 @@ final class PhabricatorUserApproveTransaction
     $body = sprintf(
       "%s\n\n  %s\n\n",
       pht(
-        'Your Phabricator account (%s) has been approved by %s. You can '.
+        'Your Phabricator account (%s) has been approved. You can '.
         'login here:',
-        $user->getUsername(),
-        $actor->getUsername()),
+        $user->getUsername()),
       PhabricatorEnv::getProductionURI('/'));
 
     $mail = id(new PhabricatorMetaMTAMail())
       ->addTos(array($user->getPHID()))
-      ->addCCs(array($actor->getPHID()))
-      ->setSubject('[Phabricator] '.$title)
+      ->setSubject('[FreeBSD] '.$title)
       ->setForceDelivery(true)
       ->setBody($body)
       ->saveAndSend();

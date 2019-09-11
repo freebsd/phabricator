@@ -625,6 +625,15 @@ final class PhabricatorAuthRegisterController
             'authentication mechanisms later on.'));
     }
 
+    $freebsd_view = id(new PHUIInfoView())
+      ->setSeverity(PHUIInfoView::SEVERITY_NOTICE)
+      ->setTitle(pht('Note to new registration'))
+      ->appendChild(
+        pht(
+          'Due to spam, after creating new account, please sent an email to '.
+          '<phabric-admin AT FreeBSD.org> with your email address and '.
+          'briefly describe your plan to get your account activated.'));
+
     $object_box = id(new PHUIObjectBoxView())
       ->setForm($form)
       ->setFormErrors($errors);
@@ -642,6 +651,7 @@ final class PhabricatorAuthRegisterController
       ->setFooter(
         array(
           $welcome_view,
+          $freebsd_view,
           $invite_header,
           $object_box,
         ));

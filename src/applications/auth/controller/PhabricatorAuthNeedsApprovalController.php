@@ -21,8 +21,10 @@ final class PhabricatorAuthNeedsApprovalController
     $instructions = $this->newCustomWaitForApprovalInstructions();
 
     $wait_for_approval = pht(
-      "Your account has been created, but needs to be approved by an ".
-      "administrator. You'll receive an email once your account is approved.");
+      "Your account has been created, but needs to be activated by an ".
+      "administrator.  Please send an email as ".
+      "https://reviews.FreeBSD.org/auth/register/ described. "
+      "You'll receive an email once your account is approved.");
 
     $dialog = $this->newDialog()
       ->setTitle(pht('Wait for Approval'))

@@ -629,9 +629,10 @@ final class PhabricatorAuthRegisterController
       ->setTitle(pht('Note to new registration'))
       ->appendChild(
         pht(
-          'Due to spam, after creating new account, please sent an email to '.
-          '<phabric-admin AT FreeBSD.org> with your email address and '.
-          'briefly describe your plan to get your account activated.'));
+          'Due to spam, after creating a new account, please send an email to '.
+          '<phabric-admin AT FreeBSD.org> from the registered email address '.
+          'and briefly describe your plan for using your account, '.
+          'in order to have it activated.'));
 
     $object_box = id(new PHUIObjectBoxView())
       ->setForm($form)

@@ -21,11 +21,11 @@ final class DifferentialRevisionViewController
   }
 
   public function getLargeDiffLimit() {
-    return 100;
+    return 200;
   }
 
   public function getVeryLargeDiffLimit() {
-    return 1000;
+    return 2000;
   }
 
   public function getChangesetCount() {

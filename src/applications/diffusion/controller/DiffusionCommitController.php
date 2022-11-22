@@ -117,7 +117,7 @@ final class DiffusionCommitController extends DiffusionController {
     $error_panel = null;
     $unpublished_panel = null;
 
-    $hard_limit = 1000;
+    $hard_limit = 2000;
 
     if ($commit->isImported()) {
       $change_query = DiffusionPathChangeQuery::newFromDiffusionRequest(

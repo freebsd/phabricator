@@ -321,12 +321,28 @@ final class PhabricatorUser
   const EMAIL_CYCLE_FREQUENCY = 86400;
   const EMAIL_TOKEN_LENGTH    = 24;
 
+  /**
+   * This function removes the blurb from a profile.
+   * This is an incredibly broad hammer to handle some spam on the upstream,
+   * which will be refined later.
+   *
+   * @return void
+   */
+  private function cleanUpProfile() {
+    $this->profile->setBlurb('');
+  }
+
   public function getUserProfile() {
     return $this->assertAttached($this->profile);
   }
 
   public function attachUserProfile(PhabricatorUserProfile $profile) {
     $this->profile = $profile;
+
+    if ($this->isDisabled) {
+      $this->cleanUpProfile();
+    }
+
     return $this;
   }
 
@@ -341,6 +357,10 @@ final class PhabricatorUser
 
     if (!$this->profile) {
       $this->profile = PhabricatorUserProfile::initializeNewProfile($this);
+    }
+
+    if ($this->isDisabled) {
+      $this->cleanUpProfile();
     }
 
     return $this->profile;
@@ -1139,7 +1159,7 @@ final class PhabricatorUser
   }
 
   public function getSSHKeyDefaultName() {
-    return 'id_rsa_phabricator';
+    return 'id_rsa_phorge';
   }
 
   public function getSSHKeyNotifyPHIDs() {

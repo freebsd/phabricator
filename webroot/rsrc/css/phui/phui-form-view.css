@@ -63,6 +63,11 @@
   color:{$greytext} !important;
 }
 
+.aphront-form-input > input[type="file"] {
+  max-width: stretch;
+  max-width: -moz-available;
+  max-width: -webkit-fill-available;
+}
 
 .aphront-form-error {
   width: 18%;
@@ -525,7 +530,7 @@ properly, and submit values. */
 }
 
 .aphront-form-preview-hidden {
-  opacity: 0.5;
+  display: none;
 }
 
 .aphront-form-error .phui-icon-view {

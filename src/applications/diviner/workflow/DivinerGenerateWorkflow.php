@@ -194,7 +194,7 @@ final class DivinerGenerateWorkflow extends DivinerWorkflow {
 
     $identifier = $args->getArg('repository');
     $repository = null;
-    if (strlen($identifier)) {
+    if (phutil_nonempty_string($identifier)) {
       $repository = id(new PhabricatorRepositoryQuery())
         ->setViewer(PhabricatorUser::getOmnipotentUser())
         ->withIdentifiers(array($identifier))
@@ -348,7 +348,7 @@ final class DivinerGenerateWorkflow extends DivinerWorkflow {
       $atomizers[$atomizer][] = $file;
     }
 
-    $root = dirname(phutil_get_library_root('phabricator'));
+    $root = dirname(phutil_get_library_root('phorge'));
     $config_root = $this->getConfig('root');
 
     $bar = id(new PhutilConsoleProgressBar())
@@ -363,7 +363,6 @@ final class DivinerGenerateWorkflow extends DivinerWorkflow {
           $this->getBookConfigPath(),
           $class,
           $chunk);
-        $future->setCWD($config_root);
 
         $futures[] = $future;
 

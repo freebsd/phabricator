@@ -17,7 +17,7 @@ final class PhabricatorProjectProjectPHIDType extends PhabricatorPHIDType {
   }
 
   public function getPHIDTypeApplicationClass() {
-    return 'PhabricatorProjectApplication';
+    return PhabricatorProjectApplication::class;
   }
 
   protected function buildQueryForObjects(
@@ -43,7 +43,7 @@ final class PhabricatorProjectProjectPHIDType extends PhabricatorPHIDType {
 
       $handle->setName($name);
 
-      if (strlen($slug)) {
+      if (phutil_nonempty_string($slug)) {
         $handle->setObjectName('#'.$slug);
         $handle->setMailStampName('#'.$slug);
         $handle->setURI("/tag/{$slug}/");

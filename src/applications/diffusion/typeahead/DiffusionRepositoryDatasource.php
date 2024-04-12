@@ -12,17 +12,20 @@ final class DiffusionRepositoryDatasource
   }
 
   public function getDatasourceApplicationClass() {
-    return 'PhabricatorDiffusionApplication';
+    return PhabricatorDiffusionApplication::class;
   }
 
   public function loadResults() {
-    $viewer = $this->getViewer();
-    $raw_query = $this->getRawQuery();
-
     $query = id(new PhabricatorRepositoryQuery())
-      ->setOrder('name')
-      ->withDatasourceQuery($raw_query);
-    $repos = $this->executeQuery($query);
+      ->setViewer($this->getViewer());
+
+    $this->applyFerretConstraints(
+      $query,
+      id(new PhabricatorRepository())->newFerretEngine(),
+      'title',
+      $this->getRawQuery());
+
+    $repos = $query->execute();
 
     $type_icon = id(new PhabricatorRepositoryRepositoryPHIDType())
       ->getTypeIcon();
@@ -41,7 +44,7 @@ final class DiffusionRepositoryDatasource
       $parts[] = $name;
 
       $slug = $repository->getRepositorySlug();
-      if (strlen($slug)) {
+      if (phutil_nonempty_string($slug)) {
         $parts[] = $slug;
       }
 

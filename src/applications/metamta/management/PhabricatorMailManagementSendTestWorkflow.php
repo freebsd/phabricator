@@ -63,6 +63,7 @@ final class PhabricatorMailManagementSendTestWorkflow
           array(
             'name' => 'type',
             'param' => 'message-type',
+            'default' => PhabricatorMailEmailMessage::MESSAGETYPE,
             'help' => pht(
               'Send the specified type of message (email, sms, ...).'),
           ),
@@ -74,10 +75,6 @@ final class PhabricatorMailManagementSendTestWorkflow
     $viewer = $this->getViewer();
 
     $type = $args->getArg('type');
-    if (!strlen($type)) {
-      $type = PhabricatorMailEmailMessage::MESSAGETYPE;
-    }
-
     $type_map = PhabricatorMailExternalMessage::getAllMessageTypes();
     if (!isset($type_map[$type])) {
       throw new PhutilArgumentUsageException(
@@ -228,8 +225,9 @@ final class PhabricatorMailManagementSendTestWorkflow
     $mail->save();
 
     $console->writeErr(
-      "%s\n\n    phabricator/ $ ./bin/mail show-outbound --id %d\n\n",
+      "%s\n\n    %s $ ./bin/mail show-outbound --id %d\n\n",
       pht('Mail sent! You can view details by running this command:'),
+      PlatformSymbols::getPlatformServerPath(),
       $mail->getID());
   }
 

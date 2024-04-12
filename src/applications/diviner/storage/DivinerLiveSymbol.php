@@ -172,7 +172,7 @@ final class DivinerLiveSymbol extends DivinerDAO
   public function getTitle() {
     $title = parent::getTitle();
 
-    if (!strlen($title)) {
+    if (!phutil_nonempty_string($title)) {
       $title = $this->getName();
     }
 
@@ -182,7 +182,7 @@ final class DivinerLiveSymbol extends DivinerDAO
   public function setTitle($value) {
     $this->writeField('title', $value);
 
-    if (strlen($value)) {
+    if (phutil_nonempty_string($value)) {
       $slug = DivinerAtomRef::normalizeTitleString($value);
       $hash = PhabricatorHash::digestForIndex($slug);
       $this->titleSlugHash = $hash;

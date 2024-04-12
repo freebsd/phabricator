@@ -210,7 +210,7 @@ final class PhabricatorStartup {
     if (!$ok) {
       self::didFatal(
         'Unable to load the "Arcanist" library. Put "arcanist/" next to '.
-        '"phabricator/" on disk.');
+        '"phorge/" on disk.');
     }
 
     // Load Phabricator itself using the absolute path, so we never end up doing
@@ -261,10 +261,11 @@ final class PhabricatorStartup {
   public static function setDebugTimeLimit($limit) {
     self::$debugTimeLimit = $limit;
 
-    static $initialized;
+    static $initialized = false;
     if (!$initialized) {
       declare(ticks=1);
       register_tick_function(array(__CLASS__, 'onDebugTick'));
+      $initialized = true;
     }
   }
 
@@ -576,7 +577,7 @@ final class PhabricatorStartup {
       self::didFatal(
         'This HTTP request included a "Proxy:" header, poisoning the '.
         'environment (CVE-2016-5385 / httpoxy). Declining to process this '.
-        'request. For details, see: https://phurl.io/u/httpoxy');
+        'request. For details, see: https://secure.phabricator.com/T11359');
     }
   }
 

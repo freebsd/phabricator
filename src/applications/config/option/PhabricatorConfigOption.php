@@ -77,7 +77,7 @@ final class PhabricatorConfigOption
       'This configuration is locked and can not be edited from the web '.
       'interface. Use %s in %s to edit it.',
       phutil_tag('tt', array(), './bin/config'),
-      phutil_tag('tt', array(), 'phabricator/'));
+      phutil_tag('tt', array(), PlatformSymbols::getPlatformServerPath()));
   }
 
   public function addExample($value, $description) {
@@ -156,11 +156,22 @@ final class PhabricatorConfigOption
     return $this->summary;
   }
 
+  /**
+   * Set the human Description of this Config
+   *
+   * @param  string|null $description Description as raw Remarkup
+   * @return self
+   */
   public function setDescription($description) {
     $this->description = $description;
     return $this;
   }
 
+  /**
+   * Get the human Description of this Config
+   *
+   * @return string|null Description as raw Remarkup
+   */
   public function getDescription() {
     return $this->description;
   }
@@ -205,7 +216,7 @@ final class PhabricatorConfigOption
 
   public function newDescriptionRemarkupView(PhabricatorUser $viewer) {
     $description = $this->getDescription();
-    if (!strlen($description)) {
+    if (!phutil_nonempty_string($description)) {
       return null;
     }
 

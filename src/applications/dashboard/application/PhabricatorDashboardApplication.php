@@ -30,6 +30,10 @@ final class PhabricatorDashboardApplication extends PhabricatorApplication {
     return 0.160;
   }
 
+  public function getMonograms() {
+    return array('W');
+  }
+
   public function getRoutes() {
     $menu_rules = $this->getProfileMenuRouting(
       'PhabricatorDashboardPortalViewController');
@@ -83,4 +87,12 @@ final class PhabricatorDashboardApplication extends PhabricatorApplication {
     );
   }
 
+  protected function getCustomCapabilities() {
+    return array(
+      PhabricatorDashboardCreateCapability::CAPABILITY => array(
+        'default' => PhabricatorPolicies::POLICY_USER,
+        'caption' => pht('Default create policy for Dashboards.'),
+      ),
+    );
+  }
 }

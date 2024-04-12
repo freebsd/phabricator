@@ -100,7 +100,15 @@ final class PHUITagView extends AphrontTagView {
     return $this;
   }
 
+  /**
+   * Set the href attribute
+   *
+   * @param string|PhutilURI|null $href
+   * @return self
+   */
   public function setHref($href) {
+    PhutilURI::checkHrefType($href);
+
     $this->href = $href;
     return $this;
   }
@@ -126,7 +134,7 @@ final class PHUITagView extends AphrontTagView {
   }
 
   protected function getTagName() {
-    return strlen($this->href) ? 'a' : 'span';
+    return phutil_nonempty_stringlike($this->href) ? 'a' : 'span';
   }
 
   public function setContextObject($context_object) {

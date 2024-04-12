@@ -41,12 +41,12 @@ final class PhabricatorDashboardPanelTabsController
 
     $op = $request->getURIData('op');
     $after = $request->getStr('after');
-    if (!strlen($after)) {
+    if ($after === '') {
       $after = null;
     }
 
     $target = $request->getStr('target');
-    if (!strlen($target)) {
+    if ($target === '') {
       $target = null;
     }
 
@@ -327,7 +327,7 @@ final class PhabricatorDashboardPanelTabsController
             'This is already the last tab. It can not move any farther to '.
             'the right.'))
         ->addCancelButton($cancel_uri);
-    } else if ((string)head_key($old_config) === $target) {
+    } else if (!$is_next && (string)head_key($old_config) === $target) {
       return $this->newDialog()
         ->setTitle(pht('Impossible!'))
         ->appendParagraph(

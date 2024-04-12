@@ -8,7 +8,7 @@ final class PonderQuestionSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorPonderApplication';
+    return PhabricatorPonderApplication::class;
   }
 
   public function newQuery() {
@@ -156,6 +156,9 @@ final class PonderQuestionSearchEngine
         pht(
           'Asked by %s',
           $handles[$question->getAuthorPHID()]->renderLink()));
+
+      // Render Closed Questions as striked in query results
+      $item->setDisabled($question->isStatusClosed());
 
       $item->addAttribute(
         pht(

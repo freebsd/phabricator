@@ -31,8 +31,7 @@ final class DiffusionRepositoryBasicsManagementPanel
     $repository = $this->getRepository();
     $viewer = $this->getViewer();
 
-    $action_list = id(new PhabricatorActionListView())
-      ->setViewer($viewer);
+    $action_list = $this->newActionList();
 
     $can_edit = PhabricatorPolicyFilter::hasCapability(
       $viewer,
@@ -220,7 +219,7 @@ final class DiffusionRepositoryBasicsManagementPanel
     $view->addProperty(pht('Type'), $type);
 
     $callsign = $repository->getCallsign();
-    if (!strlen($callsign)) {
+    if (!phutil_nonempty_string($callsign)) {
       $callsign = phutil_tag('em', array(), pht('No Callsign'));
     }
     $view->addProperty(pht('Callsign'), $callsign);

@@ -51,6 +51,10 @@ final class PhabricatorHarbormasterApplication extends PhabricatorApplication {
     );
   }
 
+  public function getMonograms() {
+    return array('B');
+  }
+
   public function getRoutes() {
     return array(
       '/B(?P<id>[1-9]\d*)' => 'HarbormasterBuildableViewController',
@@ -94,10 +98,7 @@ final class PhabricatorHarbormasterApplication extends PhabricatorApplication {
         'lint/' => array(
           '(?P<id>\d+)/' => 'HarbormasterLintMessagesController',
         ),
-        'hook/' => array(
-          'circleci/' => 'HarbormasterCircleCIHookController',
-          'buildkite/' => 'HarbormasterBuildkiteHookController',
-        ),
+        'hook/(?P<handler>[^/]+)/' => 'HarbormasterHookController',
         'log/' => array(
           'view/(?P<id>\d+)/(?:\$(?P<lines>\d+(?:-\d+)?))?'
             => 'HarbormasterBuildLogViewController',

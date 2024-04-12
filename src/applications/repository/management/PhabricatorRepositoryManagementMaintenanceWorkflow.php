@@ -23,7 +23,7 @@ final class PhabricatorRepositoryManagementMaintenanceWorkflow
             'name' => 'stop',
             'help' => pht(
               'Take repositories out of maintenance mode, returning them '.
-              'to normal serice.'),
+              'to normal service.'),
           ),
           array(
             'name' => 'repositories',
@@ -42,7 +42,7 @@ final class PhabricatorRepositoryManagementMaintenanceWorkflow
     }
 
     $message = $args->getArg('start');
-    $is_start = (bool)strlen($message);
+    $is_start = $message !== null;
     $is_stop = $args->getArg('stop');
 
     if (!$is_start && !$is_stop) {

@@ -327,13 +327,13 @@ final class PhabricatorMainMenuView extends AphrontView {
     $logo_node = phutil_tag(
       'span',
       array(
-        'class' => 'phabricator-main-menu-eye',
+        'class' => 'phabricator-main-menu-project-logo',
         'style' => implode(' ', $logo_style),
       ));
 
 
     $wordmark_text = PhabricatorCustomLogoConfigType::getLogoWordmark();
-    if (!strlen($wordmark_text)) {
+    if (!phutil_nonempty_string($wordmark_text)) {
       $wordmark_text = PlatformSymbols::getPlatformServerName();
     }
 

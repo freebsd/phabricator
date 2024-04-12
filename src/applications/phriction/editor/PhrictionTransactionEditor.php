@@ -90,7 +90,7 @@ final class PhrictionTransactionEditor
   }
 
   public function getEditorApplicationClass() {
-    return 'PhabricatorPhrictionApplication';
+    return PhabricatorPhrictionApplication::class;
   }
 
   public function getEditorObjectsDescription() {
@@ -556,7 +556,7 @@ final class PhrictionTransactionEditor
       ->setContent($this->getOldContent()->getContent())
       ->setDescription('');
 
-    if (strlen($this->getDescription())) {
+    if (phutil_nonempty_string($this->getDescription())) {
       $content->setDescription($this->getDescription());
     }
 

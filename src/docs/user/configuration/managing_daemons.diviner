@@ -1,11 +1,11 @@
 @title Managing Daemons with phd
 @group config
 
-Explains Phabricator daemons and the daemon control program `phd`.
+Explains Phorge daemons and the daemon control program `phd`.
 
 = Overview =
 
-Phabricator uses daemons (background processing scripts) to handle a number of
+Phorge uses daemons (background processing scripts) to handle a number of
 tasks:
 
   - tracking repositories, discovering new commits, and importing and parsing
@@ -16,19 +16,19 @@ tasks:
 Daemons are started and stopped with **phd** (the **Ph**abricator **D**aemon
 launcher). Daemons can be monitored via a web console.
 
-You do not need to run daemons for most parts of Phabricator to work, but some
+You do not need to run daemons for most parts of Phorge to work, but some
 features (principally, repository tracking with Diffusion) require them and
 several features will benefit in performance or stability if you configure
 daemons.
 
 = phd =
 
-**phd** is a command-line script (located at `phabricator/bin/phd`). To get
+**phd** is a command-line script (located at `phorge/bin/phd`). To get
 a list of commands, run `phd help`:
 
-  phabricator/ $ ./bin/phd help
+  phorge/ $ ./bin/phd help
   NAME
-          phd - phabricator daemon launcher
+          phd - phorge daemon launcher
   ...
 
 Generally, you will use:
@@ -43,8 +43,64 @@ If you want finer-grained control, you can use:
   - **phd launch** to launch individual daemons; and
   - **phd debug** to debug problems with daemons.
 
-NOTE: When you upgrade Phabricator or change configuration, you should restart
+NOTE: When you upgrade Phorge or change configuration, you should restart
 the daemons by running `phd restart`.
+
+Automatically start phd
+=======================
+
+NOTE: If you are opinionated against systemd, cover the eyes of your children
+right now!1!
+
+Computers are good in automatically starting stuff, thanks to the invention
+of the "init system".
+
+Phorge virtually supports any init system. Which one is yours? Don't worry.
+If you don't know, it's systemd.
+
+We propose a minimal systemd configuration file, following some assumptions:
+
+- your lovely Phorge is installed `/somewhere`
+- you have a database service called `mariadb`
+- you have a dedicated Unix user called `daemon-user` - coming from
+  @{article:Diffusion User Guide}
+
+With the above assumptions, create this configuration file as super-user:
+
+```lang=ini,name=/etc/systemd/system/phorge-phd.service
+[Unit]
+Description=Phorge Daemons
+Documentation=https://we.phorge.it/book/phorge/article/managing_daemons/
+After=syslog.target network.target mariadb.service
+
+[Service]
+Type=forking
+User=daemon-user
+Group=daemon-user
+ExecStart=/somewhere/phorge/bin/phd start
+ExecStop=/somewhere/phorge/bin/phd stop
+
+[Install]
+WantedBy=multi-user.target
+```
+
+To install this new systemd configuration, execute these commands as
+super-user:
+
+```
+systemctl daemon-reload
+systemctl enable --now phorge-phd
+```
+
+Now the process has started and will survive after any reboot.
+
+To check if everything is OK:
+
+```
+systemctl status phorge-phd
+```
+
+Anything else can be explored in depth by reading the systemd documentation.
 
 = Daemon Console =
 
@@ -81,12 +137,12 @@ launch custom daemons, or launch special daemons like the IRC bot.
 
 To debug a daemon, use `phd debug`:
 
-  phabricator/bin/ $ ./phd debug <daemon>
+  phorge/bin/ $ ./phd debug <daemon>
 
 You can pass arguments like this (normal arguments are passed to the daemon
 control mechanism, not to the daemon itself):
 
-  phabricator/bin/ $ ./phd debug <daemon> -- --flavor apple
+  phorge/bin/ $ ./phd debug <daemon> -- --flavor apple
 
 In debug mode, daemons do not daemonize, and they print additional debugging
 output to the console. This should make it easier to debug problems. You can
@@ -94,7 +150,7 @@ terminate the daemon with `^C`.
 
 To launch a nonstandard daemon, use `phd launch`:
 
-  phabricator/bin/ $ ./phd launch <daemon>
+  phorge/bin/ $ ./phd launch <daemon>
 
 This daemon will daemonize and run normally.
 
@@ -109,7 +165,7 @@ This daemon will daemonize and run normally.
     just those started with `phd start`. If you're writing a restart script,
     have it launch any custom daemons explicitly after `phd restart`.
   - You can write your own daemons and manage them with `phd` by extending
-    @{class:PhabricatorDaemon}. See @{article@phabcontrib:Adding New Classes}.
+    @{class:PhabricatorDaemon}. See @{article@contrib:Adding New Classes}.
   - See @{article:Diffusion User Guide} for details about tuning the repository
     daemon.
 
@@ -128,4 +184,4 @@ Continue by:
 
   - learning about the repository daemon with @{article:Diffusion User Guide};
     or
-  - writing your own daemons with @{article@phabcontrib:Adding New Classes}.
+  - writing your own daemons with @{article@contrib:Adding New Classes}.

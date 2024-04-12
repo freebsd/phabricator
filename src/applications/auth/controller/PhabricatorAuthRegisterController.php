@@ -73,6 +73,7 @@ final class PhabricatorAuthRegisterController
       $default_username = null;
       $default_realname = null;
       $default_email = null;
+      $fbsd_username = '';
     } else {
       $default_realname = $account->getRealName();
       $default_email = $account->getEmail();

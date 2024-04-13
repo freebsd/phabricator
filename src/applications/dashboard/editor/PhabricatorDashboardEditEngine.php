@@ -22,7 +22,7 @@ final class PhabricatorDashboardEditEngine
   }
 
   public function getEngineApplicationClass() {
-    return 'PhabricatorDashboardApplication';
+    return PhabricatorDashboardApplication::class;
   }
 
   protected function newEditableObject() {
@@ -64,6 +64,11 @@ final class PhabricatorDashboardEditEngine
 
   protected function getObjectViewURI($object) {
     return $object->getURI();
+  }
+
+  protected function getCreateNewObjectPolicy() {
+    return $this->getApplication()->getPolicy(
+      PhabricatorDashboardCreateCapability::CAPABILITY);
   }
 
   protected function buildCustomEditFields($object) {

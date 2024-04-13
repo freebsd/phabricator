@@ -47,13 +47,13 @@
   padding-left: 6px;
 }
 
-.phabricator-main-menu-eye {
+.phabricator-main-menu-project-logo {
   margin: 2px 0;
   width: 40px;
   height: 40px;
   float: left;
   display: block;
-  background-image: url(/rsrc/image/logo/light-eye.png);
+  background-image: url(/rsrc/image/logo/project-logo.png);
   background-size: 40px 40px;
 }
 
@@ -70,7 +70,8 @@
   float: left;
   color: #fff;
   font-size: 18px;
-  margin: 9px 4px 9px 6px;
+  line-height: 22px;
+  margin: 11px 4px 11px 6px;
   padding-right: 8px;
   max-width: 175px;
   overflow: hidden;
@@ -301,6 +302,8 @@ a.phabricator-core-user-menu .caret:before {
   background-size: 30px 30px;
   background-repeat: no-repeat;
   position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .phabricator-main-search-typeahead-result .result-name {
@@ -308,6 +311,7 @@ a.phabricator-core-user-menu .caret:before {
   font-size: {$normalfontsize};
   font-weight: bold;
   color: {$darkgreytext};
+  white-space: normal;
 }
 
 .phabricator-main-search-typeahead-result.result-closed {

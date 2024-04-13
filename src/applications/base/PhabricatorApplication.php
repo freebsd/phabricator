@@ -61,6 +61,21 @@ abstract class PhabricatorApplication
     return pht('%s Application', $this->getName());
   }
 
+  /**
+   * Extensions are allowed to register multi-character monograms.
+   * The name "Monogram" is actually a bit of a misnomer,
+   * but we're keeping it due to the history.
+   *
+   * @return array
+   */
+  public function getMonograms() {
+    return array();
+  }
+
+  public function isDeprecated() {
+    return false;
+  }
+
   final public function isInstalled() {
     if (!$this->canUninstall()) {
       return true;
@@ -235,6 +250,11 @@ abstract class PhabricatorApplication
     return array();
   }
 
+  /**
+   * Get the Application Overview in raw Remarkup
+   *
+   * @return string|null
+   */
   public function getOverview() {
     return null;
   }

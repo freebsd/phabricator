@@ -1,7 +1,7 @@
 @title General Coding Standards
 @group standards
 
-This document is a general coding standard for contributing to Phabricator,
+This document is a general coding standard for contributing to Phorge,
 Arcanist, and Diviner.
 
 = Overview =
@@ -60,7 +60,7 @@ And, obviously, don't do this sort of thing:
     determine if code is fast or slow by measuring it.
   - Reject performance discussions that aren't rooted in concrete data.
 
-In Phabricator, you can usually use the builtin XHProf profiling to quickly
+In Phorge, you can usually use the builtin XHProf profiling to quickly
 gather concrete performance data.
 
 
@@ -142,7 +142,7 @@ example.
 = Documentation, Comments and Formatting =
 
   - Prefer to remove code by deleting it over removing it by commenting it out.
-    It shall live forever in source control, and can be retrieved therefrom if
+    It shall live forever in source control, and can be retrieved there from if
     it is ever again called upon.
   - In source code, use only ASCII printable characters plus space and linefeed.
     Do not use UTF-8 or other multibyte encodings.

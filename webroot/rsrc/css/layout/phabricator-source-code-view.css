@@ -16,7 +16,7 @@
   white-space: pre-wrap;
   padding: 2px 8px 1px;
   width: 100%;
-  background: #ffffff;
+  background: {$diff.background};
 }
 
 .phabricator-source-line {
@@ -25,6 +25,8 @@
   border-right: 1px solid {$paste.border};
   color: {$sh-yellowtext};
   white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .phabricator-source-line > a::before {
@@ -74,10 +76,7 @@ th.phabricator-source-line a:hover {
 
 .phabricator-source-blame-skip,
 .phabricator-source-blame-info {
-  -moz-user-select: -moz-none;
-  -khtml-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 

@@ -22,7 +22,7 @@ final class PhabricatorAuditEditor
   }
 
   public function getEditorApplicationClass() {
-    return 'PhabricatorDiffusionApplication';
+    return PhabricatorDiffusionApplication::class;
   }
 
   public function getEditorObjectsDescription() {
@@ -700,7 +700,7 @@ final class PhabricatorAuditEditor
       PhabricatorAuditTransaction::MAILTAG_COMMIT =>
         pht('A commit is created.'),
       PhabricatorAuditTransaction::MAILTAG_ACTION_CONCERN =>
-        pht('A commit has a concerned raised against it.'),
+        pht('A commit has a concern raised against it.'),
       PhabricatorAuditTransaction::MAILTAG_ACTION_ACCEPT =>
         pht('A commit is accepted.'),
       PhabricatorAuditTransaction::MAILTAG_ACTION_RESIGN =>

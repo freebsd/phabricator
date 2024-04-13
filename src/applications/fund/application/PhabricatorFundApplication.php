@@ -30,10 +30,18 @@ final class PhabricatorFundApplication extends PhabricatorApplication {
     return true;
   }
 
+  public function isDeprecated() {
+    return true;
+  }
+
   public function getRemarkupRules() {
     return array(
       new FundInitiativeRemarkupRule(),
     );
+  }
+
+  public function getMonograms() {
+    return array('I');
   }
 
   public function getRoutes() {

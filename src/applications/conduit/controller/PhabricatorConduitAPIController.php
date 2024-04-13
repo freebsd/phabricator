@@ -37,7 +37,7 @@ final class PhabricatorConduitAPIController
       // TODO: The relationship between ConduitAPIRequest and ConduitCall is a
       // little odd here and could probably be improved. Specifically, the
       // APIRequest is a sub-object of the Call, which does not parallel the
-      // role of AphrontRequest (which is an indepenent object).
+      // role of AphrontRequest (which is an independent object).
       // In particular, the setUser() and getUser() existing independently on
       // the Call and APIRequest is very awkward.
 
@@ -289,7 +289,7 @@ final class PhabricatorConduitAPIController
       );
     }
 
-    $token_string = idx($metadata, 'token');
+    $token_string = idx($metadata, 'token', '');
     if (strlen($token_string)) {
 
       if (strlen($token_string) != 32) {
@@ -683,7 +683,7 @@ final class PhabricatorConduitAPIController
     // Otherwise, look for a single parameter called 'params' which has the
     // entire param dictionary JSON encoded.
     $params_json = $request->getStr('params');
-    if (strlen($params_json)) {
+    if (phutil_nonempty_string($params_json)) {
       $params = null;
       try {
         $params = phutil_json_decode($params_json);

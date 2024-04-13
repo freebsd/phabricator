@@ -85,9 +85,11 @@ final class PhabricatorDashboardTabsPanelType
     $rename_uri = id(new PhutilURI($rename_uri))
       ->replaceQueryParam('contextPHID', $context_phid);
 
-    $selected = 0;
-
     $key_list = array_keys($config);
+
+    // In the future we may persist which panel was selected.
+    // At the moment we have always selected the first one.
+    $selected = (string)head($key_list);
 
     $next_keys = array();
     $prev_keys = array();
@@ -100,7 +102,7 @@ final class PhabricatorDashboardTabsPanelType
       $panel_id = idx($tab_spec, 'panelID');
       $subpanel = idx($panels, $panel_id);
 
-      $name = idx($tab_spec, 'name');
+      $name = coalesce(idx($tab_spec, 'name'), '');
       if (!strlen($name)) {
         if ($subpanel) {
           $name = $subpanel->getName();
@@ -111,9 +113,12 @@ final class PhabricatorDashboardTabsPanelType
         $name = pht('Unnamed Tab');
       }
 
+      // The $idx can be something like "0", "1" or "asdasd98".
+      $is_selected = (string)$idx === $selected;
+
       $tab_view = id(new PHUIListItemView())
         ->setHref('#')
-        ->setSelected((string)$idx === (string)$selected)
+        ->setSelected($is_selected)
         ->addSigil('dashboard-tab-panel-tab')
         ->setMetadata(array('panelKey' => $idx))
         ->setName($name);
@@ -179,7 +184,7 @@ final class PhabricatorDashboardTabsPanelType
             ->setIcon('fa-chevron-left')
             ->setHref($prev_uri)
             ->setWorkflow(true)
-            ->setDisabled(($prev_key === null) || !$can_edit));
+            ->setDisabled($prev_key === null));
 
         $dropdown_menu->addAction(
           id(new PhabricatorActionView())
@@ -187,7 +192,7 @@ final class PhabricatorDashboardTabsPanelType
             ->setIcon('fa-chevron-right')
             ->setHref($next_uri)
             ->setWorkflow(true)
-            ->setDisabled(($next_key === null) || !$can_edit));
+            ->setDisabled($next_key === null));
 
         $dropdown_menu->addAction(
           id(new PhabricatorActionView())
@@ -280,13 +285,16 @@ final class PhabricatorDashboardTabsPanelType
         $panel_content = pht('(Invalid Panel)');
       }
 
+      // Note that $idx can be something like "0", "1" or "asdasd98".
+      $is_selected = (string)$idx === $selected;
+
       $content_id = celerity_generate_unique_node_id();
 
       $content[] = phutil_tag(
         'div',
         array(
           'id' => $content_id,
-          'style' => ($idx == $selected) ? null : 'display: none',
+          'style' => $is_selected ? null : 'display: none',
         ),
         $panel_content);
 

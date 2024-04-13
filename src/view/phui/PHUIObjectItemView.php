@@ -83,11 +83,25 @@ final class PHUIObjectItemView extends AphrontTagView {
     return $this->object;
   }
 
+  /**
+   * Set the href attribute
+   *
+   * @param string|PhutilURI|null $href
+   * @return self
+   */
   public function setHref($href) {
+    PhutilURI::checkHrefType($href);
+
     $this->href = $href;
     return $this;
   }
 
+  /**
+   * Get the href attribute
+   *
+   * @see PHUIObjectItemView::setHref()
+   * @return string|PhutilURI|null
+   */
   public function getHref() {
     return $this->href;
   }
@@ -136,7 +150,15 @@ final class PHUIObjectItemView extends AphrontTagView {
     return $this;
   }
 
+  /**
+   * Set the image href attribute
+   *
+   * @param string|PhutilURI|null $image_href
+   * @return self
+   */
   public function setImageHref($image_href) {
+    PhutilURI::checkHrefType($image_href);
+
     $this->imageHref = $image_href;
     return $this;
   }
@@ -659,7 +681,8 @@ final class PHUIObjectItemView extends AphrontTagView {
         $this->getImageIcon());
     }
 
-    if ($image && (strlen($this->href) || strlen($this->imageHref))) {
+    if ($image && (phutil_nonempty_stringlike($this->href) ||
+        phutil_nonempty_stringlike($this->imageHref))) {
       $image_href = ($this->imageHref) ? $this->imageHref : $this->href;
       $image = phutil_tag(
         'a',
@@ -873,7 +896,7 @@ final class PHUIObjectItemView extends AphrontTagView {
       'class' => 'phui-oi-status-icon',
     );
 
-    if (strlen($label)) {
+    if (phutil_nonempty_string($label)) {
       $options['sigil'] = 'has-tooltip';
       $options['meta']  = array('tip' => $label, 'size' => 300);
     }

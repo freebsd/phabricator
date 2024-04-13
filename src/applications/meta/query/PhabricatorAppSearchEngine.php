@@ -8,7 +8,7 @@ final class PhabricatorAppSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationsApplication';
+    return PhabricatorApplicationsApplication::class;
   }
 
   public function getPageSize(PhabricatorSavedQuery $saved) {
@@ -45,7 +45,7 @@ final class PhabricatorAppSearchEngine
       ->withUnlisted(false);
 
     $name = $saved->getParameter('name');
-    if (strlen($name)) {
+    if (phutil_nonempty_string($name)) {
       $query->withNameContains($name);
     }
 
@@ -231,13 +231,13 @@ final class PhabricatorAppSearchEngine
           ->setSideColumn($configure);
 
         if (!$application->isFirstParty()) {
-          $tag = id(new PHUITagView())
+          $extension_tag = id(new PHUITagView())
             ->setName(pht('Extension'))
-            ->setIcon('fa-puzzle-piece')
-            ->setColor(PHUITagView::COLOR_BLUE)
+            ->setIcon('fa-plug')
+            ->setColor(PHUITagView::COLOR_INDIGO)
             ->setType(PHUITagView::TYPE_SHADE)
             ->setSlimShady(true);
-          $item->addAttribute($tag);
+          $item->addAttribute($extension_tag);
         }
 
         if ($application->isPrototype()) {
@@ -248,6 +248,16 @@ final class PhabricatorAppSearchEngine
             ->setType(PHUITagView::TYPE_SHADE)
             ->setSlimShady(true);
           $item->addAttribute($prototype_tag);
+        }
+
+        if ($application->isDeprecated()) {
+          $deprecated_tag = id(new PHUITagView())
+            ->setName(pht('Deprecated'))
+            ->setIcon('fa-exclamation-triangle')
+            ->setColor(PHUITagView::COLOR_RED)
+            ->setType(PHUITagView::TYPE_SHADE)
+            ->setSlimShady(true);
+          $item->addAttribute($deprecated_tag);
         }
 
         $item->addAttribute($description);

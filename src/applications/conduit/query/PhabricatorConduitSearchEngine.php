@@ -8,7 +8,7 @@ final class PhabricatorConduitSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorConduitApplication';
+    return PhabricatorConduitApplication::class;
   }
 
   public function canUseInPanelContext() {
@@ -39,7 +39,7 @@ final class PhabricatorConduitSearchEngine
     $query->withIsInternal(false);
 
     $contains = $saved->getParameter('nameContains');
-    if (strlen($contains)) {
+    if (phutil_nonempty_string($contains)) {
       $query->withNameContains($contains);
     }
 

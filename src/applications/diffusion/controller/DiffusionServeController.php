@@ -43,8 +43,8 @@ final class DiffusionServeController extends DiffusionController {
       return null;
     }
 
-    $content_type = $request->getHTTPHeader('Content-Type');
-    $user_agent = idx($_SERVER, 'HTTP_USER_AGENT');
+    $content_type = $request->getHTTPHeader('Content-Type', '');
+    $user_agent = idx($_SERVER, 'HTTP_USER_AGENT', '');
     $request_type = $request->getHTTPHeader('X-Phabricator-Request-Type');
 
     // This may have a "charset" suffix, so only match the prefix.
@@ -183,8 +183,8 @@ final class DiffusionServeController extends DiffusionController {
     // won't prompt users who provide a username but no password otherwise.
     // See T10797 for discussion.
 
-    $have_user = strlen(idx($_SERVER, 'PHP_AUTH_USER'));
-    $have_pass = strlen(idx($_SERVER, 'PHP_AUTH_PW'));
+    $have_user = strlen(idx($_SERVER, 'PHP_AUTH_USER', ''));
+    $have_pass = strlen(idx($_SERVER, 'PHP_AUTH_PW', ''));
     if ($have_user && $have_pass) {
       $username = $_SERVER['PHP_AUTH_USER'];
       $password = new PhutilOpaqueEnvelope($_SERVER['PHP_AUTH_PW']);
@@ -878,10 +878,29 @@ final class DiffusionServeController extends DiffusionController {
       }
       $args_raw[] = $_SERVER[$header];
     }
-    $args_raw = implode('', $args_raw);
 
-    return id(new PhutilQueryStringParser())
-      ->parseQueryString($args_raw);
+    if ($args_raw) {
+      $args_raw = implode('', $args_raw);
+      return id(new PhutilQueryStringParser())
+        ->parseQueryString($args_raw);
+    }
+
+    // Sometimes arguments come in via the query string. Note that this will
+    // not handle multi-value entries e.g. "a[]=1,a[]=2" however it's unclear
+    // whether or how the mercurial protocol should handle this.
+    $query = idx($_SERVER, 'QUERY_STRING', '');
+    $query_pairs = id(new PhutilQueryStringParser())
+      ->parseQueryString($query);
+    foreach ($query_pairs as $key => $value) {
+      // Filter out private/internal keys as well as the command itself.
+      if (strncmp($key, '__', 2) && $key != 'cmd') {
+        $args_raw[$key] = $value;
+      }
+    }
+
+    // TODO: Arguments can also come in via request body for POST requests. The
+    // body would be all arguments, url-encoded.
+    return $args_raw;
   }
 
   private function formatMercurialArguments($command, array $arguments) {

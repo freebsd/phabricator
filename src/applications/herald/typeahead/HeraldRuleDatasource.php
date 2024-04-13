@@ -12,7 +12,7 @@ final class HeraldRuleDatasource
   }
 
   public function getDatasourceApplicationClass() {
-    return 'PhabricatorHeraldApplication';
+    return PhabricatorHeraldApplication::class;
   }
 
   public function loadResults() {
@@ -22,7 +22,7 @@ final class HeraldRuleDatasource
     $query = id(new HeraldRuleQuery())
       ->setViewer($viewer);
 
-    if (preg_match('/^[hH]\d+\z/', $raw_query)) {
+    if (($raw_query !== null) && preg_match('/^[hH]\d+\z/', $raw_query)) {
       $id = trim($raw_query, 'hH');
       $id = (int)$id;
       $query->withIDs(array($id));

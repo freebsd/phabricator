@@ -154,7 +154,7 @@ final class PhameBlog extends PhameDAO
       $href = PhabricatorEnv::getProductionURI(
         '/config/edit/policy.allow-public/');
       return pht(
-        'For custom domains to work, this this server must be '.
+        'For custom domains to work, this server must be '.
         'configured to allow the public access policy. Configure this '.
         'setting %s, or ask an administrator to configure this setting. '.
         'The domain can be specified later once this setting has been '.
@@ -169,7 +169,7 @@ final class PhameBlog extends PhameDAO
   }
 
   public function getLiveURI() {
-    if (strlen($this->getDomain())) {
+    if (phutil_nonempty_string($this->getDomain())) {
       return $this->getExternalLiveURI();
     } else {
       return $this->getInternalLiveURI();
@@ -198,6 +198,15 @@ final class PhameBlog extends PhameDAO
 
   public function getManageURI() {
     return '/phame/blog/manage/'.$this->getID().'/';
+  }
+
+  /**
+   * Get relative URI of Phame blog feed.
+   *
+   * @return string Relative URI of Phame blog feed
+   */
+  public function getFeedURI() {
+    return '/phame/blog/feed/'.$this->getID().'/';
   }
 
   public function getProfileImageURI() {

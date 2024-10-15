@@ -617,7 +617,7 @@ abstract class PhabricatorApplicationTransactionEditor
         return true;
       case PhabricatorTransactions::TYPE_SPACE:
         $space_phid = $xaction->getNewValue();
-        if (!strlen($space_phid)) {
+        if ($space_phid === null || !strlen($space_phid)) {
           // If an install has no Spaces or the Spaces controls are not visible
           // to the viewer, we might end up with the empty string here instead
           // of a strict `null`, because some controller just used `getStr()`
@@ -2363,7 +2363,9 @@ abstract class PhabricatorApplicationTransactionEditor
         // Here, we don't care about processing only new mentions after an edit
         // because there is no way for an object to ever "unmention" itself on
         // another object, so we can ignore the old value.
-        $engine->markupText($change->getNewValue());
+        if ($change->getNewValue() !== null) {
+          $engine->markupText($change->getNewValue());
+        }
 
         $mentioned_phids += $engine->getTextMetadata(
           PhabricatorObjectRemarkupRule::KEY_MENTIONED_OBJECTS,

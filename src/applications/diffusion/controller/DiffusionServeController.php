@@ -183,11 +183,13 @@ final class DiffusionServeController extends DiffusionController {
     // won't prompt users who provide a username but no password otherwise.
     // See T10797 for discussion.
 
-    $have_user = strlen(idx($_SERVER, 'PHP_AUTH_USER'));
-    $have_pass = strlen(idx($_SERVER, 'PHP_AUTH_PW'));
+    $http_user = idx($_SERVER, 'PHP_AUTH_USER');
+    $http_pass = idx($_SERVER, 'PHP_AUTH_PW');
+    $have_user = $http_user !== null && strlen($http_user);
+    $have_pass = $http_pass !== null && strlen($http_pass);
     if ($have_user && $have_pass) {
-      $username = $_SERVER['PHP_AUTH_USER'];
-      $password = new PhutilOpaqueEnvelope($_SERVER['PHP_AUTH_PW']);
+      $username = $http_user;
+      $password = new PhutilOpaqueEnvelope($http_pass);
 
       // Try Git LFS auth first since we can usually reject it without doing
       // any queries, since the username won't match the one we expect or the
@@ -524,9 +526,15 @@ final class DiffusionServeController extends DiffusionController {
         break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
         $cmd = $request->getStr('cmd');
+        if ($cmd === null) {
+          return false;
+        }
         if ($cmd == 'batch') {
           $cmds = idx($this->getMercurialArguments(), 'cmds');
-          return DiffusionMercurialWireProtocol::isReadOnlyBatchCommand($cmds);
+          if ($cmds !== null) {
+            return DiffusionMercurialWireProtocol::isReadOnlyBatchCommand(
+              $cmds);
+          }
         }
         return DiffusionMercurialWireProtocol::isReadOnlyCommand($cmd);
       case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
@@ -878,10 +886,29 @@ final class DiffusionServeController extends DiffusionController {
       }
       $args_raw[] = $_SERVER[$header];
     }
-    $args_raw = implode('', $args_raw);
 
-    return id(new PhutilQueryStringParser())
-      ->parseQueryString($args_raw);
+    if ($args_raw) {
+      $args_raw = implode('', $args_raw);
+      return id(new PhutilQueryStringParser())
+        ->parseQueryString($args_raw);
+    }
+
+    // Sometimes arguments come in via the query string. Note that this will
+    // not handle multi-value entries e.g. "a[]=1,a[]=2" however it's unclear
+    // whether or how the mercurial protocol should handle this.
+    $query = idx($_SERVER, 'QUERY_STRING', '');
+    $query_pairs = id(new PhutilQueryStringParser())
+      ->parseQueryString($query);
+    foreach ($query_pairs as $key => $value) {
+      // Filter out private/internal keys as well as the command itself.
+      if (strncmp($key, '__', 2) && $key != 'cmd') {
+        $args_raw[$key] = $value;
+      }
+    }
+
+    // TODO: Arguments can also come in via request body for POST requests. The
+    // body would be all arguments, url-encoded.
+    return $args_raw;
   }
 
   private function formatMercurialArguments($command, array $arguments) {
